@@ -21,19 +21,24 @@ export class Home extends Component {
   }
 
   loadPosts = async () => {
-    const { page, postsPerPage } = this.state
     const postsAndPhotos = await loadPosts()
-    this.setState({
-      posts: postsAndPhotos.slice(page, postsPerPage),
-      allPosts: postsAndPhotos
+    this.setState((prevState) => {
+      return {
+        posts: postsAndPhotos.slice(prevState.page, prevState.postsPerPage),
+        allPosts: postsAndPhotos
+      }
     })
   }
 
   loadMorePosts = () => {
-    const { posts, allPosts, page, postsPerPage } = this.state
-    const nextPage = page + postsPerPage
-    posts.push(...allPosts.slice(nextPage, nextPage + postsPerPage))
-    this.setState({ posts, page: nextPage })
+    this.setState((prevState) => {
+      const nextPage = prevState.page + prevState.postsPerPage
+      prevState.posts.push(...prevState.allPosts.slice(nextPage, nextPage + prevState.postsPerPage))
+      return {
+        posts: prevState.posts,
+        page: nextPage
+      }
+    })
   }
 
   handleChange = (e) => {
